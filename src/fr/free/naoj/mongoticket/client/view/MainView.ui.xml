@@ -1,0 +1,37 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
+	<ui:style type='fr.free.naoj.mongoticket.client.view.MainView.MainStyle'>
+		.table {
+			border: none;
+			border-collapse: collapse;
+		}
+		.table td {
+			border: 1px solid black;
+		}
+		.header {
+			color: white;
+			font-weight: bold;
+			background-color: gray;
+		}
+		.anchor {
+			padding-left: 4px;
+			cursor: pointer;
+		}
+	</ui:style>
+
+	<g:VerticalPanel ui:field="container">
+		<g:HorizontalPanel>
+			<g:cell>
+				<g:ListBox ui:field="deployments" />
+			</g:cell>
+			<g:cell>
+				<g:Anchor ui:field="addDeployment" styleName="{style.anchor}">Ajouter déploiement</g:Anchor>
+			</g:cell>
+			<g:cell>
+				<g:Anchor ui:field="addTicket" styleName="{style.anchor}">Ajouter billet</g:Anchor>
+			</g:cell>
+		</g:HorizontalPanel>
+		<g:HTML>&nbsp;</g:HTML>
+	</g:VerticalPanel>
+</ui:UiBinder>
