@@ -2,7 +2,6 @@ package fr.free.naoj.mongoticket.client.view;
 
 import java.util.List;
 
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -15,6 +14,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLTable.Cell;
 import com.google.gwt.user.client.ui.ListBox;
@@ -51,6 +51,7 @@ public class MainView extends Composite implements IMainView {
 	@UiField MainStyle style;
 	
 	@UiField VerticalPanel container;
+	@UiField Grid grid;
 	@UiField ListBox deployments;
 	@UiField Anchor addDeployment;
 	@UiField Anchor addTicket;
@@ -79,10 +80,12 @@ public class MainView extends Composite implements IMainView {
 		addTicket.addClickHandler(anchorHandler);
 		addDeployment.addClickHandler(anchorHandler);
 		
+		grid.getCellFormatter().getElement(1, 0).setAttribute("colspan", "2");
+		
 		tableDeployments = new FlexTable();
 		tableDeployments.getElement().addClassName(style.table());
 		tableDeployments.getRowFormatter().addStyleName(0, style.header());
-		tableDeployments.setWidget(0, 0, new HTML("#"));
+		tableDeployments.setText(0, 0, "#");
 		tableDeployments.setWidget(0, 1, new HTML("Date"));
 		tableDeployments.setWidget(0, 2, new HTML("Déployé"));
 		tableDeployments.setWidget(0, 3, new HTML(""));

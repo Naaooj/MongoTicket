@@ -1,15 +1,24 @@
 package fr.free.naoj.mongoticket.server;
 
+import static fr.free.naoj.mongoticket.server.MongoPropertyLoader.DATABASE;
+import static fr.free.naoj.mongoticket.server.MongoPropertyLoader.HOSTNAME;
+import static fr.free.naoj.mongoticket.server.MongoPropertyLoader.PASSWORD;
+import static fr.free.naoj.mongoticket.server.MongoPropertyLoader.USERNAME;
+
 import java.lang.reflect.Field;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bson.types.ObjectId;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -22,26 +31,34 @@ import fr.free.naoj.mongoticket.server.entity.DeploymentEntity;
 import fr.free.naoj.mongoticket.server.entity.MongoEntity;
 import fr.free.naoj.mongoticket.server.entity.MongoField;
 import fr.free.naoj.mongoticket.server.entity.TicketEntity;
+import fr.free.naoj.mongoticket.shared.Constant.ExceptionCode;
 import fr.free.naoj.mongoticket.shared.entity.Deployment;
 import fr.free.naoj.mongoticket.shared.entity.IEntity;
 import fr.free.naoj.mongoticket.shared.entity.Ticket;
+import fr.free.naoj.mongoticket.shared.exception.InternalException;
 
 /**
  * <p></p>
  *
  * @author Johann Bernez
  */
+@Singleton
 public class TicketServiceImpl extends RemoteServiceServlet implements TicketService {
 
 	private static final long serialVersionUID = 2679955228130988518L;
+	
+	private static final Logger LOG = Logger.getLogger(TicketServiceImpl.class.getName());
 	
 	private static final String DEPLOYMENTS_COLLECTION = "deployments";
 	private static final String TICKETS_COLLECTION = "tickets";
 	
 	private static final String MONGO_ID = "_id";
 	
+	@Inject
+	private MongoPropertyLoader propertyLoader;
+
 	@Override
-	public Ticket getTicket(String ticketId) {
+	public Ticket getTicket(String ticketId) throws InternalException {
 		if (ticketId != null) {
 			DB db = null;
 			if ((db=getDB()) != null) {
@@ -57,7 +74,7 @@ public class TicketServiceImpl extends RemoteServiceServlet implements TicketSer
 	}
 	
 	@Override
-	public List<Ticket> getTickets(String filterId) {
+	public List<Ticket> getTickets(String filterId) throws InternalException {
 		List<Ticket> tickets = Collections.emptyList();
 		
 		DB db = null;
@@ -80,7 +97,7 @@ public class TicketServiceImpl extends RemoteServiceServlet implements TicketSer
 	}
 
 	@Override
-	public void deleteTicket(Ticket ticket) {
+	public void deleteTicket(Ticket ticket) throws InternalException {
 		if (ticket != null) {
 			DB db = getDB();
 			TicketEntity entity = new TicketEntity();
@@ -90,7 +107,7 @@ public class TicketServiceImpl extends RemoteServiceServlet implements TicketSer
 	}
 
 	@Override
-	public void saveTicket(Ticket ticket) {
+	public void saveTicket(Ticket ticket) throws InternalException {
 		if (ticket != null) {
 			TicketEntity entity = new TicketEntity();
 			entity.convertFrom(ticket);
@@ -106,7 +123,7 @@ public class TicketServiceImpl extends RemoteServiceServlet implements TicketSer
 	}
 
 	@Override
-	public Deployment getDeployment(String deploymentId) {
+	public Deployment getDeployment(String deploymentId) throws InternalException {
 		if (deploymentId != null) {
 			DB db = null;
 			if ((db=getDB()) != null) {
@@ -122,7 +139,7 @@ public class TicketServiceImpl extends RemoteServiceServlet implements TicketSer
 	}
 
 	@Override
-	public List<Deployment> getDeployments(String filterId) {
+	public List<Deployment> getDeployments(String filterId) throws InternalException {
 		List<Deployment> deployments = Collections.emptyList();
 		
 		DB db = null;
@@ -146,7 +163,7 @@ public class TicketServiceImpl extends RemoteServiceServlet implements TicketSer
 	}
 
 	@Override
-	public void deleteDeployment(Deployment deployment) {
+	public void deleteDeployment(Deployment deployment) throws InternalException {
 		if (deployment != null) {
 			DB db = getDB();
 			DeploymentEntity entity = new DeploymentEntity();
@@ -159,7 +176,7 @@ public class TicketServiceImpl extends RemoteServiceServlet implements TicketSer
 	}
 
 	@Override
-	public void saveDeployment(Deployment deployment) {
+	public void saveDeployment(Deployment deployment) throws InternalException {
 		if (deployment != null) {
 			DeploymentEntity entity = new DeploymentEntity();
 			entity.convertFrom(deployment);
@@ -174,7 +191,7 @@ public class TicketServiceImpl extends RemoteServiceServlet implements TicketSer
 		}
 	}
 	
-	private void loadEntity(DB db, MongoEntity<?> entity) {
+	private void loadEntity(DB db, MongoEntity<?> entity) throws InternalException {
 		try {
 			MongoField annot = null;
 			for (Entry<String, Field> entry : entity.getRelations().entrySet()) {
@@ -200,16 +217,22 @@ public class TicketServiceImpl extends RemoteServiceServlet implements TicketSer
 		}
 	}
 
-	private DB getDB() {
+	private DB getDB() throws InternalException {
 		DB dbConnection = null;
 		try {
-			Mongo m = new Mongo("localhost");
-		
-			dbConnection = m.getDB("mongoticket");
+			propertyLoader.load();
+			
+			Mongo m = new Mongo(propertyLoader.getProperty(HOSTNAME));
+			dbConnection = m.getDB(propertyLoader.getProperty(DATABASE));
+			
+			dbConnection.authenticate(propertyLoader.getProperty(USERNAME), propertyLoader.getProperty(PASSWORD).toCharArray());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (MongoException e) {
-			e.printStackTrace();
+			LOG.log(Level.SEVERE, "A problem occured with mongo driver", e);
+		} catch (Throwable t) {
+			LOG.log(Level.SEVERE, "Internal exception occured", t);
+			throw new InternalException(ExceptionCode.UNMANAGED);
 		}
 		return dbConnection;
 	}

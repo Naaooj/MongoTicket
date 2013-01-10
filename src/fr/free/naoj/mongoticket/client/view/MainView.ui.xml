@@ -14,24 +14,33 @@
 			font-weight: bold;
 			background-color: gray;
 		}
-		.anchor {
+		.header td {
 			padding-left: 4px;
+			padding-right: 4px;
+		}
+		.anchor {
 			cursor: pointer;
 		}
 	</ui:style>
 
-	<g:VerticalPanel ui:field="container">
-		<g:HorizontalPanel>
-			<g:cell>
-				<g:ListBox ui:field="deployments" />
-			</g:cell>
-			<g:cell>
-				<g:Anchor ui:field="addDeployment" styleName="{style.anchor}">Ajouter déploiement</g:Anchor>
-			</g:cell>
-			<g:cell>
-				<g:Anchor ui:field="addTicket" styleName="{style.anchor}">Ajouter billet</g:Anchor>
-			</g:cell>
-		</g:HorizontalPanel>
+	<g:VerticalPanel ui:field="container" styleName="container">
+		<g:Grid ui:field="grid">
+			<g:row>
+				<g:customCell>
+					<g:Anchor ui:field="addDeployment" styleName="{style.anchor}">Ajouter déploiement</g:Anchor>
+				</g:customCell>
+				<g:customCell>
+					<g:Anchor ui:field="addTicket" styleName="{style.anchor}">Ajouter billet</g:Anchor>
+				</g:customCell>
+			</g:row>
+			<g:row>
+				<g:customCell>
+					<g:HTMLPanel>
+						Filtrer par date : <span><g:ListBox ui:field="deployments" /></span>
+					</g:HTMLPanel>
+				</g:customCell>
+			</g:row>
+		</g:Grid>
 		<g:HTML>&nbsp;</g:HTML>
 	</g:VerticalPanel>
 </ui:UiBinder>

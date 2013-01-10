@@ -40,7 +40,7 @@ public class MongoTicket implements EntryPoint {
 		PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 		historyHandler.register(placeController, eventBus, new MainPlace());
 		
-		RootPanel.get().add(container);
+		RootPanel.get("tickets").add(container);
 		historyHandler.handleCurrentHistory();
 	}
 }

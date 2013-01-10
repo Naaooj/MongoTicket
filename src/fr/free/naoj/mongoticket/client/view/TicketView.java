@@ -3,7 +3,6 @@ package fr.free.naoj.mongoticket.client.view;
 import java.util.Date;
 import java.util.List;
 
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -47,9 +46,10 @@ public class TicketView extends Composite implements ITicketView {
 	
 	public TicketView() {
 		VerticalPanel container = new VerticalPanel();
+		container.addStyleName("container");
 		FlexTable table = new FlexTable();
 		
-		Anchor back = new Anchor("Retour");
+		Anchor back = new Anchor("<< Retour");
 		
 		int rowIndex = 0;
 		

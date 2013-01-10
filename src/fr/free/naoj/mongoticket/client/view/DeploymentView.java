@@ -2,7 +2,6 @@ package fr.free.naoj.mongoticket.client.view;
 
 import java.util.Date;
 
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -34,9 +33,11 @@ public class DeploymentView extends Composite implements IDeploymentView {
 	
 	public DeploymentView() {
 		VerticalPanel container = new VerticalPanel();
+		container.addStyleName("container");
+		
 		FlexTable table = new FlexTable();
 		
-		Anchor back = new Anchor("Retour");
+		Anchor back = new Anchor("<< Retour");
 		
 		int rowIndex = 0;
 		

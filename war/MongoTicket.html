@@ -8,8 +8,9 @@
     <title>MongoTicket - Gestion des tickets mantis livrés</title>
     
     <script type="text/javascript" language="javascript" src="mongoticket/mongoticket.nocache.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
   </head>
-  <body>
+  <body id="body">
 
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
@@ -22,6 +23,9 @@
       </div>
     </noscript>
 
-	<div id="tickets" style="border: 1px solid dotted;"></div>
+	<div id="mainContent">
+		<div id="title">MongoTicket</div>
+		<div id="tickets"></div>
+	</div>
   </body>
 </html>
